@@ -34,7 +34,10 @@ jobs:
           BASE: ${{ github.event.pull_request.base.sha }}
           HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
-          git diff --name-status "$BASE" "$HEAD" > changes.txt
+          # Three-dot: compare against the merge-base, matching GitHub's "Files
+          # changed" view, so changes that landed on the base after this branch
+          # was forked are not falsely attributed to the PR.
+          git diff --name-status "$BASE...$HEAD" > changes.txt
           echo "Changed files:"; cat changes.txt
 
           # A submission PR may only ADD files under Submissions/.
